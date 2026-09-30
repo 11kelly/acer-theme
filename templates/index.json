@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "acer_hero": {
@@ -18,25 +27,41 @@
         "card_1": {
           "type": "card",
           "settings": {
-            "collection": ""
+            "collection": "shop-now-swift-go-14-ai-series",
+            "image_alt": "",
+            "title": "",
+            "text": "",
+            "link": ""
           }
         },
         "card_2": {
           "type": "card",
           "settings": {
-            "collection": ""
+            "collection": "",
+            "image_alt": "",
+            "title": "",
+            "text": "",
+            "link": ""
           }
         },
         "card_3": {
           "type": "card",
           "settings": {
-            "collection": ""
+            "collection": "",
+            "image_alt": "",
+            "title": "",
+            "text": "",
+            "link": ""
           }
         },
         "card_4": {
           "type": "card",
           "settings": {
-            "collection": ""
+            "collection": "",
+            "image_alt": "",
+            "title": "",
+            "text": "",
+            "link": ""
           }
         }
       },
@@ -54,7 +79,12 @@
         "title": "Top Deals",
         "collection": "",
         "products_to_show": 8,
-        "offset_top": 0
+        "offset_top": 0,
+        "offset_bottom": 0,
+        "tag_match": "Copilot+ PC",
+        "tag_label": "Copilot+ PC",
+        "compare_label": "Add to Compare",
+        "features_label": "Features"
       }
     },
     "acer_favourites": {
@@ -63,7 +93,12 @@
         "title": "Our Customers' Favourites",
         "collection": "",
         "products_to_show": 8,
-        "offset_top": 50
+        "offset_top": 50,
+        "offset_bottom": 0,
+        "tag_match": "Copilot+ PC",
+        "tag_label": "Copilot+ PC",
+        "compare_label": "Add to Compare",
+        "features_label": "Features"
       }
     },
     "acer_gaming": {
@@ -73,7 +108,11 @@
         "collection": "",
         "products_to_show": 8,
         "offset_top": 50,
-        "offset_bottom": 40
+        "offset_bottom": 40,
+        "tag_match": "Copilot+ PC",
+        "tag_label": "Copilot+ PC",
+        "compare_label": "Add to Compare",
+        "features_label": "Features"
       }
     }
   },
