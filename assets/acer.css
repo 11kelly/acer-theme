@@ -1160,7 +1160,7 @@ details[open] > summary .acer-plus::after {
   justify-content: center;
   width: 32px;
   height: 32px;
-  padding: 2px;
+  padding: 0;
   border: 2px solid transparent;
   border-radius: 500px;
   background: var(--acer-green);
@@ -1177,7 +1177,9 @@ details[open] > summary .acer-plus::after {
 }
 
 .acer-card__atc img {
+  flex: none;
   width: 28px;
+  max-width: none;
   height: 28px;
 }
 
