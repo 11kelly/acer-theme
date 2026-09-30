@@ -1,0 +1,242 @@
+{%- liquid
+  assign menu = section.settings.menu
+  if section.settings.logo != blank
+    assign logo_src = section.settings.logo | image_url: width: 180
+  else
+    assign logo_src = 'acer-logo.png' | asset_url
+  endif
+  if section.settings.business_logo != blank
+    assign business_src = section.settings.business_logo | image_url: width: 180
+  else
+    assign business_src = 'acer-for-business.png' | asset_url
+  endif
+-%}
+
+<header class="acer acer-header">
+  {%- if section.settings.show_announcement -%}
+    <a class="acer-announce" href="{{ section.settings.announcement_link | default: '#' }}">
+      <span class="acer-announce__inner">
+        <span class="acer-announce__text">{{ section.settings.announcement_text }}</span>
+        {%- if section.settings.announcement_cta != blank -%}
+          <span class="acer-announce__cta-wrap">
+            <span class="acer-announce__cta">{{ section.settings.announcement_cta | escape }}</span>
+          </span>
+        {%- endif -%}
+      </span>
+    </a>
+  {%- endif -%}
+
+  <div class="acer-header__main">
+    <div class="acer-header__brand">
+      <button
+        type="button"
+        class="acer-header__burger"
+        aria-controls="AcerDrawer-{{ section.id }}"
+        aria-expanded="false"
+        aria-label="{{ 'accessibility.menu' | t }}"
+        data-acer-drawer-open
+      >
+        <img src="{{ 'acer-icon-hamburger.svg' | asset_url }}" alt="" width="24" height="12">
+      </button>
+      <a class="acer-header__logo" href="{{ routes.root_url }}">
+        <img src="{{ logo_src }}" alt="{{ shop.name | escape }}" width="90" height="21">
+      </a>
+    </div>
+
+    <form class="acer-search" action="{{ routes.search_url }}" method="get" role="search">
+      <label class="acer-visually-hidden" for="AcerSearch-{{ section.id }}">
+        {{- section.settings.search_placeholder | escape -}}
+      </label>
+      <input
+        id="AcerSearch-{{ section.id }}"
+        class="acer-search__input"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder=""
+        autocomplete="off"
+      >
+      <input type="hidden" name="options[prefix]" value="last">
+      <button class="acer-search__button" type="submit" aria-label="{{ 'content.search' | t }}">
+        <img src="{{ 'acer-icon-search.svg' | asset_url }}" alt="" width="38" height="28">
+      </button>
+    </form>
+
+    <div class="acer-header__icons">
+      <div class="acer-header__icons-group">
+        <a class="acer-icon-link" href="{{ section.settings.contact_link | default: '/pages/contact' }}" aria-label="{{ section.settings.contact_label | escape }}">
+          <img src="{{ 'acer-icon-contact.svg' | asset_url }}" alt="" width="28" height="28">
+        </a>
+        <a class="acer-icon-link" href="{{ routes.account_url }}" aria-label="{{ 'accessibility.account' | t }}">
+          <img src="{{ 'acer-icon-account.svg' | asset_url }}" alt="" width="28" height="28">
+        </a>
+      </div>
+      <a class="acer-icon-link" href="{{ routes.cart_url }}" aria-label="{{ 'accessibility.cart' | t }}">
+        <img src="{{ 'acer-icon-cart.svg' | asset_url }}" alt="" width="28" height="28">
+        <span class="acer-cart-count" data-acer-cart-count {% if cart.item_count == 0 %}hidden{% endif %}>
+          {{- cart.item_count -}}
+        </span>
+      </a>
+    </div>
+  </div>
+
+  <nav class="acer-nav" aria-label="{{ 'accessibility.menu' | t }}">
+    <ul class="acer-nav__list">
+      {%- for link in menu.links -%}
+        <li class="acer-nav__item{% if forloop.first and section.settings.highlight_first %} acer-nav__item--highlight{% endif %}">
+          <a class="acer-nav__link" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>
+            {{- link.title | escape -}}
+          </a>
+          {%- if link.links != blank -%}
+            <ul class="acer-nav__dropdown">
+              {%- for child in link.links -%}
+                <li><a href="{{ child.url }}">{{ child.title | escape }}</a></li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+      {%- if section.settings.show_business -%}
+        <li class="acer-nav__business">
+          <a href="{{ section.settings.business_link | default: '#' }}">
+            <img src="{{ business_src }}" alt="{{ section.settings.business_alt | escape }}" width="90" height="35" loading="lazy">
+          </a>
+        </li>
+      {%- endif -%}
+    </ul>
+  </nav>
+
+  <dialog class="acer acer-drawer" id="AcerDrawer-{{ section.id }}" aria-label="{{ 'accessibility.menu' | t }}">
+    <div class="acer-drawer__panel">
+      <button type="button" class="acer-drawer__close" aria-label="{{ 'actions.close' | t }}" data-acer-drawer-close>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2"/></svg>
+      </button>
+      <ul class="acer-drawer__list">
+        {%- for link in menu.links -%}
+          <li class="acer-drawer__item{% if forloop.first and section.settings.highlight_first %} acer-drawer__item--highlight{% endif %}">
+            {%- if link.links != blank -%}
+              <details>
+                <summary>{{ link.title | escape }}<span class="acer-plus" aria-hidden="true"></span></summary>
+                <ul class="acer-drawer__sub">
+                  <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+                  {%- for child in link.links -%}
+                    <li><a href="{{ child.url }}">{{ child.title | escape }}</a></li>
+                  {%- endfor -%}
+                </ul>
+              </details>
+            {%- else -%}
+              <a href="{{ link.url }}">{{ link.title | escape }}<span class="acer-plus" aria-hidden="true"></span></a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+      {%- if section.settings.show_business -%}
+        <a class="acer-drawer__business" href="{{ section.settings.business_link | default: '#' }}">
+          <img src="{{ business_src }}" alt="{{ section.settings.business_alt | escape }}" width="90" height="35" loading="lazy">
+        </a>
+      {%- endif -%}
+    </div>
+  </dialog>
+</header>
+
+{% schema %}
+{
+  "name": "Acer header",
+  "class": "acer-header-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Announcement bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement",
+      "default": true
+    },
+    {
+      "type": "inline_richtext",
+      "id": "announcement_text",
+      "label": "Text",
+      "default": "UP TO <strong>30%</strong> OFF"
+    },
+    {
+      "type": "text",
+      "id": "announcement_cta",
+      "label": "Button label",
+      "default": "SAVE NOW"
+    },
+    {
+      "type": "url",
+      "id": "announcement_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Displayed at 90 × 21 px. Leave empty to use the default Acer logo."
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search label",
+      "default": "Enter keyword to search"
+    },
+    {
+      "type": "url",
+      "id": "contact_link",
+      "label": "Contact link"
+    },
+    {
+      "type": "text",
+      "id": "contact_label",
+      "label": "Contact label",
+      "default": "Contact Us"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "highlight_first",
+      "label": "Highlight first menu item",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_business",
+      "label": "Show business link",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "business_logo",
+      "label": "Business logo",
+      "info": "Displayed at 90 × 35 px."
+    },
+    {
+      "type": "text",
+      "id": "business_alt",
+      "label": "Business logo alt text",
+      "default": "Acer for business"
+    },
+    {
+      "type": "url",
+      "id": "business_link",
+      "label": "Business link"
+    }
+  ]
+}
+{% endschema %}

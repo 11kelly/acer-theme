@@ -1,0 +1,142 @@
+{%- liquid
+  assign s = section.settings
+  assign form_id = 'AcerNewsletter-' | append: section.id
+-%}
+
+<div class="acer" {{ section.shopify_attributes }}>
+  <div class="acer-newsletter" style="--flags: url('{{ 'acer-flags.png' | asset_url }}');">
+    <img class="acer-newsletter__plane" src="{{ 'acer-plane.png' | asset_url }}" alt="" width="35" height="35" loading="lazy">
+    {%- form 'customer', id: form_id, data-acer-newsletter: '' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <input type="hidden" name="contact[accepts_marketing]" value="true">
+      <h2 class="acer-newsletter__title">{{ s.title | escape }}</h2>
+      <p class="acer-newsletter__intro">{{ s.intro | escape }}</p>
+
+      {%- if form.posted_successfully? -%}
+        <p class="acer-newsletter__message" role="status">{{ s.success_message | escape }}</p>
+      {%- elsif form.errors -%}
+        <p class="acer-newsletter__message" role="alert">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+      {%- endif -%}
+
+      <div class="acer-newsletter__fields">
+        <div class="acer-newsletter__field">
+          <label class="acer-visually-hidden" for="{{ form_id }}-email">{{ s.email_placeholder | escape }}</label>
+          <input
+            class="acer-newsletter__input"
+            id="{{ form_id }}-email"
+            type="email"
+            name="contact[email]"
+            placeholder="{{ s.email_placeholder | escape }}"
+            autocomplete="email"
+            autocapitalize="off"
+            spellcheck="false"
+            required
+          >
+        </div>
+        <div class="acer-newsletter__field">
+          <label class="acer-visually-hidden" for="{{ form_id }}-phone">{{ s.phone_placeholder | escape }}</label>
+          <span class="acer-newsletter__country" aria-hidden="true">
+            <span class="acer-flag"></span>
+            <span class="acer-caret"></span>
+          </span>
+          <input
+            class="acer-newsletter__input acer-newsletter__input--phone"
+            id="{{ form_id }}-phone"
+            type="tel"
+            name="contact[phone]"
+            placeholder="{{ s.phone_placeholder | escape }}"
+            autocomplete="tel"
+          >
+        </div>
+      </div>
+
+      <div class="acer-newsletter__bottom">
+        <label class="acer-newsletter__consent">
+          <input type="checkbox" required>
+          <span>{{ s.consent | escape }}</span>
+        </label>
+        <p class="acer-newsletter__question" id="{{ form_id }}-question">{{ s.question | escape }}</p>
+        <div class="acer-newsletter__choices" role="radiogroup" aria-labelledby="{{ form_id }}-question">
+          <label class="acer-choice">
+            <input type="radio" name="acer_business" value="yes">
+            <span>{{ s.yes_label | escape }}</span>
+          </label>
+          <label class="acer-choice">
+            <input type="radio" name="acer_business" value="no">
+            <span>{{ s.no_label | escape }}</span>
+          </label>
+        </div>
+      </div>
+      <button type="submit" class="acer-newsletter__submit">Subscribe</button>
+    {%- endform -%}
+  </div>
+  <div class="acer-newsletter__band"></div>
+</div>
+
+{% schema %}
+{
+  "name": "Acer newsletter",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "WELCOME: ENJOY 5% DISCOUNT. VALID ON NON-SALE ITEMS ONLY"
+    },
+    {
+      "type": "text",
+      "id": "intro",
+      "label": "Intro",
+      "default": "Subscribe to our newsletter and get your voucher code immediately"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Email placeholder",
+      "default": "Email"
+    },
+    {
+      "type": "text",
+      "id": "phone_placeholder",
+      "label": "Phone placeholder",
+      "default": "Phone number (optional)"
+    },
+    {
+      "type": "text",
+      "id": "consent",
+      "label": "Consent text",
+      "default": "I have read the terms of Acer's Privacy Policy and agree to receive communications."
+    },
+    {
+      "type": "text",
+      "id": "question",
+      "label": "Business question",
+      "default": "Are you shopping for a business?"
+    },
+    {
+      "type": "text",
+      "id": "yes_label",
+      "label": "Yes label",
+      "default": "YES"
+    },
+    {
+      "type": "text",
+      "id": "no_label",
+      "label": "No label",
+      "default": "NO"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thanks for subscribing! Check your inbox for your voucher code."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Acer newsletter"
+    }
+  ]
+}
+{% endschema %}

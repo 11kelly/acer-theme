@@ -1,0 +1,180 @@
+{% doc %}
+  Acer product card used by the acer-product-rail section.
+
+  Product data drives everything when `product` is passed. Without a product the card renders the
+  `demo_*` values so the section previews like the design before a collection is assigned.
+
+  Optional product metafields:
+  - acer.copilot_label (single line text) — overrides the tag-based "Copilot+ PC" label
+  - acer.psu_wattage (single line text, e.g. "65 - 100") — shows the power supply icons
+  - acer.psu_included (boolean) — true when the charger is in the box
+  - acer.psu_usb_pd (boolean) — adds the "USB PD" line
+  - acer.features (rich text) — mobile "Features" panel; falls back to the description
+
+  @param {product} [product] - Product to render
+  @param {string} [tag_match] - Product tag that shows the green label
+  @param {string} [tag_label] - Label text for tagged products
+  @param {image} [psu_included_icon] - Icon used when the power supply is included
+  @param {boolean} [eager] - Load the image eagerly
+  @param {string} [compare_label] - Compare checkbox label
+  @param {string} [features_label] - Mobile features toggle label
+  @param {string} [demo_features] - Placeholder features text
+  @param {string} [demo_title] - Placeholder title
+  @param {string} [demo_image] - Placeholder image URL
+  @param {string} [demo_price] - Placeholder price
+  @param {string} [demo_compare] - Placeholder compare-at price
+  @param {string} [demo_badge] - Placeholder discount badge
+  @param {boolean} [demo_tag] - Show label on the placeholder
+  @param {string} [demo_psu] - Placeholder wattage range
+  @param {boolean} [demo_usb_pd] - Placeholder USB PD flag
+{% enddoc %}
+{%- liquid
+  assign loading = 'lazy'
+  if eager
+    assign loading = 'eager'
+  endif
+
+  if product
+    assign variant = product.selected_or_first_available_variant
+    assign title = product.title
+    assign url = product.url
+    assign price = product.price | money
+    assign compare = blank
+    assign badge = blank
+    if product.compare_at_price > product.price
+      assign compare = product.compare_at_price | money
+      assign saving = product.compare_at_price | minus: product.price
+      assign badge = saving | money_without_trailing_zeros | prepend: '-'
+    endif
+    assign label = product.metafields.acer.copilot_label.value
+    if label == blank and tag_match != blank and product.tags contains tag_match
+      assign label = tag_label
+    endif
+    assign psu = product.metafields.acer.psu_wattage.value
+    assign psu_included = product.metafields.acer.psu_included.value
+    assign usb_pd = product.metafields.acer.psu_usb_pd.value
+    assign image = product.featured_image
+  else
+    assign title = demo_title
+    assign url = '#'
+    assign price = demo_price
+    assign compare = demo_compare
+    assign badge = demo_badge
+    assign label = blank
+    if demo_tag
+      assign label = tag_label
+    endif
+    assign psu = demo_psu
+    assign psu_included = false
+    assign usb_pd = demo_usb_pd
+  endif
+-%}
+
+<article class="acer-card">
+  <div class="acer-card__media">
+    {%- if image -%}
+      {%- assign image_alt = image.alt | default: title -%}
+      {{
+        image
+        | image_url: width: 724
+        | image_tag:
+          widths: '320, 400, 540, 724',
+          sizes: '(min-width: 1680px) 362px, (min-width: 990px) calc(25vw - 58px), (min-width: 750px) calc(50vw - 68px), calc(100vw - 96px)',
+          loading: loading,
+          alt: image_alt
+      }}
+    {%- elsif demo_image != blank -%}
+      <img src="{{ demo_image }}" alt="{{ title | escape }}" width="360" height="360" loading="{{ loading }}" decoding="async">
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag }}
+    {%- endif -%}
+    {%- if badge != blank -%}
+      <span class="acer-card__badge">{{ badge }}</span>
+    {%- endif -%}
+  </div>
+
+  <div>
+    <div class="acer-card__info">
+      {%- liquid
+        if product
+          assign features = product.metafields.acer.features.value
+          if features == blank
+            assign features = product.description | strip_html | truncatewords: 30
+          endif
+        else
+          assign features = demo_features
+        endif
+      -%}
+      {%- if features != blank -%}
+        <details class="acer-card__features">
+          <summary>{{ features_label | default: 'Features' }}<span class="acer-plus" aria-hidden="true"></span></summary>
+          <div class="acer-card__features-body">
+            {%- if product.metafields.acer.features.value != blank -%}
+              {{ product.metafields.acer.features | metafield_tag }}
+            {%- else -%}
+              <p>{{ features | escape }}</p>
+            {%- endif -%}
+          </div>
+        </details>
+      {%- endif -%}
+      <h3 class="acer-card__title">
+        <a href="{{ url }}">{{ title | escape }}</a>
+      </h3>
+      {%- if label != blank -%}
+        <p class="acer-card__tag">{{ label | escape }}</p>
+      {%- endif -%}
+      <div class="acer-card__buy">
+        <p class="acer-card__price">
+          {%- if compare != blank -%}
+            <s class="acer-card__compare"><span class="acer-visually-hidden">{{ 'content.price_regular' | t }}</span>{{ compare }}</s>
+          {%- endif -%}
+          <span class="acer-card__current">{{ price }}</span>
+        </p>
+        <div class="acer-card__atc">
+          {%- if product -%}
+            <form action="{{ routes.cart_add_url }}" method="post" data-acer-atc>
+              <input type="hidden" name="id" value="{{ variant.id }}">
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" aria-label="{{ 'actions.add_to_cart' | t }}: {{ title | escape }}" {% unless variant.available %}disabled{% endunless %}>
+                <img src="{{ 'acer-icon-add-to-cart.svg' | asset_url }}" alt="" width="28" height="28">
+              </button>
+            </form>
+          {%- else -%}
+            <button type="button" aria-label="{{ 'actions.add_to_cart' | t }}: {{ title | escape }}">
+              <img src="{{ 'acer-icon-add-to-cart.svg' | asset_url }}" alt="" width="28" height="28">
+            </button>
+          {%- endif -%}
+        </div>
+      </div>
+      <label class="acer-card__compare-btn">
+        <input type="checkbox" name="compare" value="{{ product.id | default: title | escape }}">
+        <img src="{{ 'acer-icon-compare.svg' | asset_url }}" alt="" width="11" height="14">
+        <span>{{ compare_label | default: 'Add to Compare' }}</span>
+      </label>
+    </div>
+
+    {%- if psu != blank -%}
+      <div class="acer-card__psu" style="margin-top: 12px;">
+        {%- if psu_included -%}
+          {%- if psu_included_icon != blank -%}
+            <div class="acer-psu">
+              {{ psu_included_icon | image_url: width: 100 | image_tag: width: 50, height: 69, loading: 'lazy', alt: 'Power supply included' }}
+            </div>
+          {%- endif -%}
+        {%- else -%}
+          <div class="acer-psu">
+            <img src="{{ 'acer-psu-not-included.png' | asset_url }}" alt="Power supply not included" width="50" height="69" loading="lazy">
+          </div>
+        {%- endif -%}
+        <div class="acer-psu">
+          <img src="{{ 'acer-psu-range.png' | asset_url }}" alt="Supports {{ psu | escape }} W{% if usb_pd %} USB PD{% endif %} power supply" width="50" height="69" loading="lazy">
+          <div class="acer-psu__label" aria-hidden="true">
+            <span>{{ psu | escape }}</span>
+            <span>W</span>
+            {%- if usb_pd -%}<small>USB PD</small>{%- endif -%}
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</article>

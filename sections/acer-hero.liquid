@@ -1,0 +1,143 @@
+{%- liquid
+  assign s = section.settings
+  if s.image_desktop != blank
+    assign desktop_src = s.image_desktop | image_url: width: 1640
+    assign src_1100 = s.image_desktop | image_url: width: 1100
+    assign src_2400 = s.image_desktop | image_url: width: 2400
+    assign desktop_srcset = src_1100 | append: ' 1100w, ' | append: desktop_src | append: ' 1640w, ' | append: src_2400 | append: ' 2400w'
+  else
+    assign desktop_src = 'acer-hero-desktop.jpg' | asset_url
+    assign desktop_srcset = desktop_src | append: ' 1640w'
+  endif
+  if s.image_tablet != blank
+    assign tablet_src = s.image_tablet | image_url: width: 1500
+  else
+    assign tablet_src = 'acer-hero-tablet.jpg' | asset_url
+  endif
+  if s.image_mobile != blank
+    assign mobile_src = s.image_mobile | image_url: width: 750
+  elsif s.image_tablet != blank
+    assign mobile_src = s.image_tablet | image_url: width: 750
+  else
+    assign mobile_src = 'acer-hero-tablet.jpg' | asset_url
+  endif
+  if s.loading_eager
+    assign loading = 'eager'
+  else
+    assign loading = 'lazy'
+  endif
+-%}
+
+<div class="acer acer-hero" {{ section.shopify_attributes }}>
+  <div class="acer-container">
+    <a class="acer-hero__link" href="{{ s.link | default: '#' }}">
+      <picture class="acer-hero__media{% if s.image_mobile != blank %} acer-hero__media--mobile{% endif %}">
+        <source media="(max-width: 749px)" srcset="{{ mobile_src }}">
+        <source media="(max-width: 989px)" srcset="{{ tablet_src }}">
+        <img
+          src="{{ desktop_src }}"
+          srcset="{{ desktop_srcset }}"
+          sizes="(min-width: 1680px) 1640px, calc(100vw - 40px)"
+          alt="{{ s.image_alt | escape }}"
+          width="1640"
+          height="250"
+          loading="{{ loading }}"
+          {% if s.loading_eager %}fetchpriority="high"{% endif %}
+          decoding="async"
+        >
+      </picture>
+      {%- if s.heading != blank or s.subheading != blank or s.button_label != blank -%}
+        <div class="acer-hero__content">
+          <div>
+            {%- if s.heading != blank -%}
+              <h2 class="acer-hero__heading">{{ s.heading | escape }}</h2>
+            {%- endif -%}
+            {%- if s.subheading != blank -%}
+              <p class="acer-hero__subheading" style="margin-top: 10px;">{{ s.subheading | escape }}</p>
+            {%- endif -%}
+          </div>
+          {%- if s.button_label != blank -%}
+            <span class="acer-btn">{{ s.button_label | escape }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </a>
+    {%- if s.note != blank -%}
+      <p class="acer-hero__note">{{ s.note | escape }}</p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Acer hero banner",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image_desktop",
+      "label": "Desktop image",
+      "info": "1640 × 250 px recommended."
+    },
+    {
+      "type": "image_picker",
+      "id": "image_tablet",
+      "label": "Tablet image",
+      "info": "Cropped to 728 × 569 px, anchored left."
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image",
+      "info": "Cropped to 342 × 270 px. Falls back to the tablet image."
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "default": "Acer 50th anniversary"
+    },
+    {
+      "type": "checkbox",
+      "id": "loading_eager",
+      "label": "Load image immediately",
+      "info": "Enable for the first banner on the page (improves LCP).",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "50 Years of Acer Innovation"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "UP TO 30% OFF"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "DISCOVER DEALS"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Note below banner",
+      "default": "Acer 50 anniversary sale ends on 3rd November at 8:00 AM, or while stock lasts."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Acer hero banner"
+    }
+  ]
+}
+{% endschema %}

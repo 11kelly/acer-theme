@@ -1,0 +1,16 @@
+{% doc %}
+  Renders a five-star rating with a partially filled overlay.
+
+  @param {number} rating - Rating from 0 to 5
+  @param {string} size - 'lg' or 'sm'
+{% enddoc %}
+{%- liquid
+  assign star = 'acer-star-' | append: size | append: '.svg' | asset_url
+  assign full = rating | floor
+-%}
+<span class="acer-stars" role="img" aria-label="{{ rating }} / 5" style="--mask: url('{{ star }}');">
+  {%- for i in (1..5) -%}<span class="acer-mask" aria-hidden="true"></span>{%- endfor -%}
+  <span class="acer-stars__fill" style="width: calc({{ rating }} * var(--size, 23.5px) + {{ full }} * var(--gap, 4.6px));" aria-hidden="true">
+    {%- for i in (1..5) -%}<span class="acer-mask"></span>{%- endfor -%}
+  </span>
+</span>

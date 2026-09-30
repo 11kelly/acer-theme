@@ -1,0 +1,246 @@
+{%- liquid
+  assign s = section.settings
+  assign menu_blocks = section.blocks | where: 'type', 'menu'
+  assign usp_blocks = section.blocks | where: 'type', 'usp'
+  assign default_usp_icons = 'acer-usp-delivery.png,acer-usp-support.png,acer-usp-payment.png' | split: ','
+-%}
+
+<div class="acer acer-footer" {{ section.shopify_attributes }}>
+  <div class="acer-footer__main">
+    {%- if s.note != blank -%}
+      <div class="acer-footer__note">{{ s.note }}</div>
+    {%- endif -%}
+
+    <div class="acer-footer__cols">
+      <div class="acer-footer__menus">
+        {%- for block in menu_blocks -%}
+          <div class="acer-footer__col" {{ block.shopify_attributes }}>
+            <h2 class="acer-footer__heading">
+              <button type="button" aria-expanded="false" data-acer-accordion>
+                {{- block.settings.heading | escape -}}
+                <span class="acer-plus" aria-hidden="true"></span>
+              </button>
+            </h2>
+            <ul class="acer-footer__links">
+              {%- for link in block.settings.menu.links -%}
+                <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <div class="acer-footer__aside">
+        <div class="acer-footer__social">
+          <h2 class="acer-footer__heading">{{ s.social_heading | escape }}</h2>
+          <ul class="acer-footer__social-list">
+                          <li>
+                <a href="{{ s.facebook | default: settings.social_facebook_link | default: '#' }}" target="_blank" rel="noopener" aria-label="Facebook">
+                  <img src="{{ 'acer-social-facebook.svg' | asset_url }}" alt="" width="13" height="20" loading="lazy" style="width: 12.59px; height: 20.45px;">
+                </a>
+              </li>
+                          <li>
+                <a href="{{ s.x | default: settings.social_twitter_link | default: '#' }}" target="_blank" rel="noopener" aria-label="X">
+                  <img src="{{ 'acer-social-x.svg' | asset_url }}" alt="" width="22" height="18" loading="lazy" style="width: 22px; height: 17.88px;">
+                </a>
+              </li>
+                          <li>
+                <a href="{{ s.youtube | default: settings.social_youtube_link | default: '#' }}" target="_blank" rel="noopener" aria-label="YouTube">
+                  <img src="{{ 'acer-social-youtube.svg' | asset_url }}" alt="" width="22" height="15" loading="lazy" style="width: 22px; height: 15.47px;">
+                </a>
+              </li>
+                          <li>
+                <a href="{{ s.instagram | default: settings.social_instagram_link | default: '#' }}" target="_blank" rel="noopener" aria-label="Instagram">
+                  <img src="{{ 'acer-social-instagram.svg' | asset_url }}" alt="" width="22" height="19" loading="lazy" style="width: 22px; height: 18.86px;">
+                </a>
+              </li>
+          </ul>
+        </div>
+
+        {%- if s.returns_heading != blank or s.returns_label != blank -%}
+          <div class="acer-footer__returns">
+            <h2 class="acer-footer__heading">{{ s.returns_heading | escape }}</h2>
+            {%- if s.returns_label != blank -%}
+              <a class="acer-btn acer-btn--outline" href="{{ s.returns_link | default: '#' }}">{{ s.returns_label | escape }}</a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- if usp_blocks.size > 0 -%}
+    <div class="acer-usp">
+      <ul class="acer-usp__list">
+        {%- for block in usp_blocks -%}
+          {%- liquid
+            assign icon_index = forloop.index0 | modulo: 3
+            if block.settings.icon != blank
+              assign icon_src = block.settings.icon | image_url: width: 70
+            else
+              assign icon_src = default_usp_icons[icon_index] | asset_url
+            endif
+          -%}
+          <li class="acer-usp__item" {{ block.shopify_attributes }}>
+            {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}" style="display: contents;">{%- endif -%}
+            <img src="{{ icon_src }}" alt="" width="35" height="22" loading="lazy">
+            <span>{{ block.settings.text | escape }}</span>
+            {%- if block.settings.link != blank -%}</a>{%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+
+  <div class="acer-footer__bottom">
+    <div class="acer-footer__legal">
+      <p>&copy; {{ 'now' | date: '%Y' }} {{ s.copyright | escape }}</p>
+      {%- if s.reseller != blank -%}
+        <p>{{ s.reseller | escape }}</p>
+      {%- endif -%}
+    </div>
+    <a class="acer-footer__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+      <img src="{{ 'acer-footer-logo.svg' | asset_url }}" alt="" width="66" height="66" loading="lazy">
+    </a>
+    <p class="acer-footer__region">{{ s.region | default: localization.country.name | escape }}</p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Acer footer",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "note",
+      "label": "Footnote",
+      "default": "<p>* Upgrade timing may vary by device. Features and app availability may vary by region. Certain features require specific hardware (see <a href=\"https://www.microsoft.com/en-gb/windows/windows-11-specifications\">https://www.microsoft.com/en-gb/windows/windows-11-specifications</a>).</p>"
+    },
+    {
+      "type": "header",
+      "content": "Social"
+    },
+    {
+      "type": "text",
+      "id": "social_heading",
+      "label": "Heading",
+      "default": "Follow Us On Social"
+    },
+    {
+      "type": "url",
+      "id": "facebook",
+      "label": "Facebook",
+      "info": "Falls back to the theme social settings."
+    },
+    {
+      "type": "url",
+      "id": "x",
+      "label": "X"
+    },
+    {
+      "type": "url",
+      "id": "youtube",
+      "label": "YouTube"
+    },
+    {
+      "type": "url",
+      "id": "instagram",
+      "label": "Instagram"
+    },
+    {
+      "type": "header",
+      "content": "Returns"
+    },
+    {
+      "type": "text",
+      "id": "returns_heading",
+      "label": "Heading",
+      "default": "Returns & withdrawal"
+    },
+    {
+      "type": "text",
+      "id": "returns_label",
+      "label": "Button label",
+      "default": "Withdraw contract"
+    },
+    {
+      "type": "url",
+      "id": "returns_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Bottom bar"
+    },
+    {
+      "type": "text",
+      "id": "copyright",
+      "label": "Copyright",
+      "default": "Acer Inc."
+    },
+    {
+      "type": "text",
+      "id": "reseller",
+      "label": "Reseller notice",
+      "default": "CPYou BV is the authorised reseller and merchant of the products and services offered within this store."
+    },
+    {
+      "type": "text",
+      "id": "region",
+      "label": "Region label",
+      "default": "United Kingdom"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu column",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Acer"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "footer"
+        }
+      ]
+    },
+    {
+      "type": "usp",
+      "name": "Service item",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon",
+          "info": "Displayed at 35 × 22 px."
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Free Express Delivery"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Acer footer"
+    }
+  ]
+}
+{% endschema %}

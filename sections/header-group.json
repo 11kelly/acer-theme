@@ -1,0 +1,21 @@
+{
+  "type": "header",
+  "name": "t:names.header",
+  "sections": {
+    "acer_header": {
+      "type": "acer-header",
+      "settings": {
+        "show_announcement": true,
+        "announcement_text": "UP TO <strong>30%</strong> OFF",
+        "announcement_cta": "SAVE NOW",
+        "announcement_link": "",
+        "menu": "main-menu",
+        "highlight_first": true,
+        "show_business": true,
+        "business_alt": "Acer for business",
+        "business_link": ""
+      }
+    }
+  },
+  "order": ["acer_header"]
+}

@@ -1,0 +1,167 @@
+{
+  "type": "footer",
+  "name": "t:names.footer",
+  "sections": {
+    "acer_reviews": {
+      "type": "acer-reviews",
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "rating": 4,
+            "date": "16/07/2026",
+            "author": "Richard C.",
+            "title": "All fine up to now except authorizing c/c payment.",
+            "text": "All fine up to now except authorizing c/c payment.",
+            "verified": true,
+            "show_answer": true
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "date": "13/07/2026",
+            "author": "GRAHAM D.",
+            "title": "So easy to navigate your website and purchase laptop",
+            "text": "So easy to navigate your website and purchase laptop Cannot see anything to improve",
+            "verified": true,
+            "show_answer": true
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "date": "15/06/2026",
+            "author": "M D.",
+            "title": "Genuine Discount",
+            "text": "Hope this is a genuine discount and not a discontinued model. Looking forward to its arrival.",
+            "verified": true,
+            "show_answer": true
+          }
+        },
+        "review_4": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "date": "15/06/2026",
+            "author": "Sheila marie B.",
+            "title": "",
+            "text": "I satisfied the discount and the items",
+            "verified": true,
+            "show_answer": true
+          }
+        },
+        "review_5": {
+          "type": "review",
+          "settings": {
+            "rating": 1,
+            "date": "14/06/2026",
+            "author": "Sathiyaseelan l A.",
+            "title": "",
+            "text": "I found better price",
+            "verified": true,
+            "show_answer": true
+          }
+        },
+        "review_6": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "date": "13/06/2026",
+            "author": "Charlie L.",
+            "title": "I satisfied and happy the dicount and the product",
+            "text": "I satisfied and happy the dicount and the product",
+            "verified": true,
+            "show_answer": true
+          }
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3",
+        "review_4",
+        "review_5",
+        "review_6"
+      ],
+      "settings": {
+        "rating": "4.65",
+        "rating_label": "Excellent"
+      }
+    },
+    "acer_newsletter": {
+      "type": "acer-newsletter",
+      "settings": {}
+    },
+    "acer_footer": {
+      "type": "acer-footer",
+      "blocks": {
+        "menu_1": {
+          "type": "menu",
+          "settings": {
+            "heading": "Acer",
+            "menu": "footer-acer"
+          }
+        },
+        "menu_2": {
+          "type": "menu",
+          "settings": {
+            "heading": "Support",
+            "menu": "footer-support"
+          }
+        },
+        "menu_3": {
+          "type": "menu",
+          "settings": {
+            "heading": "Account",
+            "menu": "footer-account"
+          }
+        },
+        "menu_4": {
+          "type": "menu",
+          "settings": {
+            "heading": "Acer Store",
+            "menu": "footer-acer-store"
+          }
+        },
+        "usp_1": {
+          "type": "usp",
+          "settings": {
+            "text": "Free Express Delivery"
+          }
+        },
+        "usp_2": {
+          "type": "usp",
+          "settings": {
+            "text": "Pre and Post Purchase Support"
+          }
+        },
+        "usp_3": {
+          "type": "usp",
+          "settings": {
+            "text": "with 0% Interest"
+          }
+        }
+      },
+      "block_order": [
+        "menu_1",
+        "menu_2",
+        "menu_3",
+        "menu_4",
+        "usp_1",
+        "usp_2",
+        "usp_3"
+      ],
+      "settings": {
+        "region": "United Kingdom"
+      }
+    }
+  },
+  "order": [
+    "acer_reviews",
+    "acer_newsletter",
+    "acer_footer"
+  ]
+}

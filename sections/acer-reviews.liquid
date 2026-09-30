@@ -1,0 +1,180 @@
+{%- liquid
+  assign s = section.settings
+  assign average_rating = s.rating | plus: 0
+  assign logo_mask = 'acer-trusted-logo.svg' | asset_url
+  assign arrow_prev = 'acer-arrow-prev.svg' | asset_url
+  assign arrow_next = 'acer-arrow-next.svg' | asset_url
+  assign verified_mask = 'acer-verified.svg' | asset_url
+  assign bubble_mask = 'acer-bubble.svg' | asset_url
+-%}
+
+{%- capture grade -%}
+  <div class="acer-grade">
+    {%- render 'acer-stars', rating: average_rating, size: 'lg' -%}
+    <p class="acer-grade__score">{{ s.rating | escape }}</p>
+    <p class="acer-grade__label">{{ s.rating_label | escape }}</p>
+    <span class="acer-grade__logo">
+      <span class="acer-mask" style="--mask: url('{{ logo_mask }}');" role="img" aria-label="Trusted Shops"></span>
+    </span>
+  </div>
+{%- endcapture -%}
+
+<div class="acer acer-reviews" {{ section.shopify_attributes }}>
+  <acer-carousel class="acer-reviews__row">
+    {{ grade }}
+    <div class="acer-reviews__carousel">
+      <button type="button" class="acer-reviews__prev" data-prev aria-label="{{ 'accessibility.slideshow_previous' | t }}">
+        <span class="acer-mask" style="--mask: url('{{ arrow_prev }}');"></span>
+      </button>
+      <ul class="acer-scroller acer-reviews__track" data-track aria-label="{{ s.rating_label | escape }}">
+        <li class="acer-reviews__grade-slide">{{ grade }}</li>
+        {%- for block in section.blocks -%}
+          <li class="acer-review" {{ block.shopify_attributes }}>
+            <div class="acer-review__top">
+              {%- render 'acer-stars', rating: block.settings.rating, size: 'sm' -%}
+              {%- if block.settings.verified -%}
+                <span class="acer-review__verified">
+                  <span class="acer-mask" style="--mask: url('{{ verified_mask }}');" role="img" aria-label="Verified review"></span>
+                </span>
+              {%- endif -%}
+            </div>
+            <p class="acer-review__meta">{{ block.settings.date | escape }} by {{ block.settings.author | escape }}</p>
+            <div class="acer-review__body">
+              {%- if block.settings.title != blank -%}
+                <p class="acer-review__title">{{ block.settings.title | escape }}</p>
+              {%- endif -%}
+              <p class="acer-review__text">{{ block.settings.text | escape }}</p>
+            </div>
+            {%- if block.settings.show_answer -%}
+              <a class="acer-review__answer" href="{{ block.settings.link | default: s.more_link | default: '#' }}">
+                <span class="acer-mask" style="--mask: url('{{ bubble_mask }}');" aria-hidden="true"></span>
+                {{ s.answer_label | escape }}
+              </a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+      <button type="button" class="acer-reviews__next" data-next aria-label="{{ 'accessibility.slideshow_next' | t }}">
+        <span class="acer-mask" style="--mask: url('{{ arrow_next }}');"></span>
+      </button>
+    </div>
+  </acer-carousel>
+  {%- if s.disclaimer != blank -%}
+    <p class="acer-reviews__disclaimer">
+      {{ s.disclaimer | escape }}
+      {%- if s.more_label != blank -%}
+        <a href="{{ s.more_link | default: '#' }}">{{ s.more_label | escape }}</a>
+      {%- endif -%}
+    </p>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Acer reviews",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Static review carousel styled after the Trusted Shops widget. Replace with the official widget snippet if you use Trusted Shops."
+    },
+    {
+      "type": "text",
+      "id": "rating",
+      "label": "Average rating",
+      "info": "0 to 5, e.g. 4.65",
+      "default": "4.65"
+    },
+    {
+      "type": "text",
+      "id": "rating_label",
+      "label": "Rating label",
+      "default": "Excellent"
+    },
+    {
+      "type": "text",
+      "id": "answer_label",
+      "label": "Answer link label",
+      "default": "Read answer"
+    },
+    {
+      "type": "textarea",
+      "id": "disclaimer",
+      "label": "Disclaimer",
+      "default": "We use Trusted Shops as an independent service provider for collecting reviews. Trusted Shops has taken reasonable and proportionate steps to ensure that these are genuine reviews."
+    },
+    {
+      "type": "text",
+      "id": "more_label",
+      "label": "More information label",
+      "default": "More information"
+    },
+    {
+      "type": "url",
+      "id": "more_link",
+      "label": "More information link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "text",
+          "id": "date",
+          "label": "Date",
+          "default": "16/07/2026"
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author",
+          "default": "Richard C."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "checkbox",
+          "id": "verified",
+          "label": "Verified",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_answer",
+          "label": "Show answer link",
+          "default": true
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Answer link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Acer reviews"
+    }
+  ]
+}
+{% endschema %}

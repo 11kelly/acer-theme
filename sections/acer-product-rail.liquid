@@ -1,0 +1,164 @@
+{%- liquid
+  assign s = section.settings
+  assign collection = s.collection
+  assign heading_id = 'AcerRail-' | append: section.id
+-%}
+
+<div class="acer acer-rail" style="--rail-offset: {{ s.offset_top }}px; --rail-offset-bottom: {{ s.offset_bottom }}px; --badge: url('{{ 'acer-badge-hex.png' | asset_url }}');" {{ section.shopify_attributes }}>
+  <div class="acer-container">
+    <acer-carousel>
+      <div class="acer-rail__head">
+        <h2 class="acer-rail__title" id="{{ heading_id }}">{{ s.title | escape }}</h2>
+        <div class="acer-arrows" data-arrows hidden>
+          <button type="button" class="acer-arrow" data-prev aria-label="{{ 'accessibility.slideshow_previous' | t }}" disabled>
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="button" class="acer-arrow" data-next aria-label="{{ 'accessibility.slideshow_next' | t }}">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.5 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <ul class="acer-scroller acer-rail__track" data-track aria-labelledby="{{ heading_id }}">
+        {%- if collection != blank and collection.products_count > 0 -%}
+          {%- for product in collection.products limit: s.products_to_show -%}
+            <li class="acer-rail__item">
+              {%- render 'acer-product-card',
+                product: product,
+                tag_match: s.tag_match,
+                tag_label: s.tag_label,
+                compare_label: s.compare_label,
+                features_label: s.features_label,
+                psu_included_icon: s.psu_included_icon
+              -%}
+            </li>
+          {%- endfor -%}
+        {%- else -%}
+          {%- liquid
+            assign demo_titles = 'Acer Swift Go 14 AI OLED Ultra-thin Laptop ¦ SFG14-I71 ¦ Blue~Acer Aspire 16 AI Laptop ¦ A16-61M ¦ Grey~Acer Aspire C 24 All-in-One ¦ C24-195ES ¦ White~Acer Aspire Go Spin 14 Laptop ¦ AGSP14-31PT ¦ Silver' | split: '~'
+            assign demo_prices = '£999.99,£799.99,£899.99,£649.99' | split: ','
+            assign demo_compares = '£1,099.99~£999.99~£1,149.99~£749.99' | split: '~'
+            assign demo_badges = '-£100,-£200,-£250,-£100' | split: ','
+          -%}
+          {%- for i in (0..3) -%}
+            {%- liquid
+              assign demo_image = 'acer-demo-product-' | append: forloop.index | append: '.jpg' | asset_url
+              assign demo_title = demo_titles[i] | replace: '¦', '|'
+              assign demo_tag = false
+              assign demo_psu = blank
+              if i < 2
+                assign demo_tag = true
+                assign demo_psu = '65 - 100'
+              endif
+            -%}
+            <li class="acer-rail__item">
+              {%- render 'acer-product-card',
+                tag_label: s.tag_label,
+                compare_label: s.compare_label,
+                features_label: s.features_label,
+                demo_features: 'Intel® Core™ Ultra processor, OLED display, all-day battery life.',
+                demo_title: demo_title,
+                demo_image: demo_image,
+                demo_price: demo_prices[i],
+                demo_compare: demo_compares[i],
+                demo_badge: demo_badges[i],
+                demo_tag: demo_tag,
+                demo_psu: demo_psu,
+                demo_usb_pd: true
+              -%}
+            </li>
+          {%- endfor -%}
+        {%- endif -%}
+      </ul>
+    </acer-carousel>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Acer product rail",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Top Deals"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 4,
+      "max": 16,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "offset_top",
+      "label": "Top spacing",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "offset_bottom",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Product labels"
+    },
+    {
+      "type": "text",
+      "id": "tag_match",
+      "label": "Product tag for label",
+      "default": "Copilot+ PC",
+      "info": "Products with this tag show the green label. Metafield acer.copilot_label overrides it."
+    },
+    {
+      "type": "text",
+      "id": "tag_label",
+      "label": "Label text",
+      "default": "Copilot+ PC"
+    },
+    {
+      "type": "text",
+      "id": "compare_label",
+      "label": "Compare label",
+      "default": "Add to Compare"
+    },
+    {
+      "type": "text",
+      "id": "features_label",
+      "label": "Mobile features label",
+      "default": "Features"
+    },
+    {
+      "type": "image_picker",
+      "id": "psu_included_icon",
+      "label": "Power supply included icon",
+      "info": "Shown when metafield acer.psu_included is true. 50 × 69 px."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Acer product rail"
+    }
+  ]
+}
+{% endschema %}

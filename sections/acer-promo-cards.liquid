@@ -1,0 +1,142 @@
+{%- liquid
+  assign default_images = 'acer-promo-copilot.jpg,acer-promo-swift-air.jpg,acer-promo-nvidia.jpg,acer-promo-business.jpg' | split: ','
+  assign default_titles = 'Shop now Swift Go 14 AI series|Meet the new Acer Swift Air 14|Ultimate Upgrade. Powers Unleashed.|BUSINESS OFFERS' | split: '|'
+  assign default_texts = 'Copilot+ PCs are the fastest, most intelligent Windows PCs ever|Ultra-Light. Refined Aluminium Design. All-day Battery life. Love at first sight.|Get CONTROL Resonant With Select GeForce RTX 50 Series.|UP TO 30% OFF' | split: '|'
+-%}
+
+<div class="acer acer-promos" {{ section.shopify_attributes }}>
+  <div class="acer-container">
+    <div class="acer-scroller acer-promos__track">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign index = forloop.index0 | modulo: 4
+          assign collection = block.settings.collection
+
+          # Image: override → collection image → first product image → bundled demo image
+          assign image = block.settings.image
+          if image == blank and collection != blank
+            assign image = collection.featured_image
+          endif
+
+          # Copy: override → collection data → demo copy (only while no collection is chosen)
+          assign title = block.settings.title
+          assign text = block.settings.text
+          if collection != blank
+            if title == blank
+              assign title = collection.title
+            endif
+            if text == blank
+              assign text = collection.description | strip_html | strip | truncate: 90
+            endif
+            assign url = block.settings.link | default: collection.url
+          else
+            if title == blank
+              assign title = default_titles[index]
+            endif
+            if text == blank
+              assign text = default_texts[index]
+            endif
+            assign url = block.settings.link | default: '#'
+          endif
+
+          if image != blank
+            assign img_src = image | image_url: width: 794
+            assign img_small = image | image_url: width: 500
+            assign img_srcset = img_small | append: ' 500w, ' | append: img_src | append: ' 794w'
+            assign img_alt = block.settings.image_alt | default: image.alt | default: title
+          else
+            assign img_src = default_images[index] | asset_url
+            assign img_srcset = img_src | append: ' 550w'
+            assign img_alt = block.settings.image_alt | default: title
+          endif
+        -%}
+        <a class="acer-promo" href="{{ url }}" {{ block.shopify_attributes }}>
+          <figure class="acer-promo__media">
+            <img
+              src="{{ img_src }}"
+              srcset="{{ img_srcset }}"
+              sizes="(min-width: 1680px) 397px, (min-width: 990px) calc((100vw - 90px) / 4), (min-width: 750px) 321px, 248px"
+              alt="{{ img_alt | escape }}"
+              width="550"
+              height="275"
+              loading="lazy"
+              decoding="async"
+            >
+          </figure>
+          {%- if title != blank -%}
+            <h3 class="acer-promo__title">{{ title | escape }}</h3>
+          {%- endif -%}
+          {%- if text != blank -%}
+            <p class="acer-promo__text">{{ text | escape }}</p>
+          {%- endif -%}
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Acer promo cards",
+  "tag": "section",
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Collection card",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection",
+          "info": "Image, title, description and link come from the collection."
+        },
+        {
+          "type": "header",
+          "content": "Overrides (optional)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Replaces the collection image. 2:1 ratio, 550 × 275 px or larger."
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image alt text"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "info": "Replaces the collection title."
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "info": "Replaces the collection description."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Replaces the collection link."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Acer promo cards",
+      "blocks": [
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" }
+      ]
+    }
+  ]
+}
+{% endschema %}

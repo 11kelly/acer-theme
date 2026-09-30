@@ -1,0 +1,87 @@
+{
+  "sections": {
+    "acer_hero": {
+      "type": "acer-hero",
+      "settings": {
+        "image_alt": "Acer 50th anniversary",
+        "loading_eager": true,
+        "heading": "50 Years of Acer Innovation",
+        "subheading": "UP TO 30% OFF",
+        "button_label": "DISCOVER DEALS",
+        "link": "",
+        "note": "Acer 50 anniversary sale ends on 3rd November at 8:00 AM, or while stock lasts."
+      }
+    },
+    "acer_promos": {
+      "type": "acer-promo-cards",
+      "blocks": {
+        "card_1": {
+          "type": "card",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "card_2": {
+          "type": "card",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "card_3": {
+          "type": "card",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "card_4": {
+          "type": "card",
+          "settings": {
+            "collection": ""
+          }
+        }
+      },
+      "block_order": [
+        "card_1",
+        "card_2",
+        "card_3",
+        "card_4"
+      ],
+      "settings": {}
+    },
+    "acer_top_deals": {
+      "type": "acer-product-rail",
+      "settings": {
+        "title": "Top Deals",
+        "collection": "",
+        "products_to_show": 8,
+        "offset_top": 0
+      }
+    },
+    "acer_favourites": {
+      "type": "acer-product-rail",
+      "settings": {
+        "title": "Our Customers' Favourites",
+        "collection": "",
+        "products_to_show": 8,
+        "offset_top": 50
+      }
+    },
+    "acer_gaming": {
+      "type": "acer-product-rail",
+      "settings": {
+        "title": "Gaming",
+        "collection": "",
+        "products_to_show": 8,
+        "offset_top": 50,
+        "offset_bottom": 40
+      }
+    }
+  },
+  "order": [
+    "acer_hero",
+    "acer_promos",
+    "acer_top_deals",
+    "acer_favourites",
+    "acer_gaming"
+  ]
+}
