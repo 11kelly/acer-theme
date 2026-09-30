@@ -77,7 +77,7 @@
       "type": "acer-product-rail",
       "settings": {
         "title": "Top Deals",
-        "collection": "",
+        "collection": "3-d-puzzles",
         "products_to_show": 8,
         "offset_top": 0,
         "offset_bottom": 0,
@@ -91,7 +91,7 @@
       "type": "acer-product-rail",
       "settings": {
         "title": "Our Customers' Favourites",
-        "collection": "",
+        "collection": "american-girl",
         "products_to_show": 8,
         "offset_top": 50,
         "offset_bottom": 0,
